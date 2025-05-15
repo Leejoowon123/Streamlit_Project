@@ -1,0 +1,12 @@
+
+{company}이(가) 속한 산업에 대해 2024~2025년 기준으로 포터의 Five Forces 분석을 수행하라.
+
+산업 구조에 대한 최신 보고서, 시장 점유율, 경쟁 구도, 진입장벽, 대체재 등을 고려하고, 다음 5가지 요소에 대해 각각 구체적인 사실에 기반한 설명을 제공하라:
+
+1. 기존 경쟁자(Rivalry among existing competitors)
+2. 신규 진입자의 위협(Threat of new entrants)
+3. 공급자의 교섭력(Bargaining power of suppliers)
+4. 구매자의 교섭력(Bargaining power of buyers)
+5. 대체재의 위협(Threat of substitutes)
+
+모든 분석은 최신 산업 동향과 공개된 데이터를 기반으로 작성하고, 가능하다면 구체적인 예시 또는 출처를 언급하라.

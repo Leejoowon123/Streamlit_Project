@@ -1,0 +1,4 @@
+.venv
+.env
+gemini_test
+__pycache__
