@@ -40,10 +40,14 @@ if st.button("분석 실행") and company_name:
         st.markdown(content.replace("\n", "  \n"))
 
     st.success("✅ 분석 완료! PDF 저장 가능")
+    
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
 
     today = datetime.now().strftime("%Y.%m.%d")
     filename = f"{today}_{company_name}_전략분석.pdf"
-    pdf_path = generate_pdf_report(company_name, result, file_path=filename)
+    file_path = os.path.join(output_dir, filename)
+    pdf_path = generate_pdf_report(company_name, result, file_path=file_path)
 
     with open(pdf_path, "rb") as f:
         st.download_button(
