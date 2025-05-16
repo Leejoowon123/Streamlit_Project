@@ -64,11 +64,31 @@ def run_full_analysis(company_name, selected_stages):
             answer = f"❌ {display_name} 호출 중 오류 발생: {e}"
 
         result[display_name] = answer
+        
+    try:
+        full_analysis_text = "\n\n".join(
+            [v for k, v in result.items() if not k.startswith("__")]
+        )
+
+        summarizer_prompt = load_prompt("summarizer", company_name)
+        final_prompt = summarizer_prompt.replace("{{분석내용}}", full_analysis_text)
+
+        summary_response = call_gemini(final_prompt)
+
+        summary_lines = summary_response.strip().splitlines()
+        summary_text = next((line for line in summary_lines if line.strip()), "")
+        keyword_line = next((line for line in summary_lines if "키워드" in line), "")
+        keywords = keyword_line.replace("키워드:", "").strip() if "키워드:" in keyword_line else ""
+
+        result["__요약__"] = summary_text
+        result["__키워드__"] = keywords
+    except Exception as e:
+        result["__요약__"] = f"❌ 요약 실패: {e}"
+        result["__키워드__"] = "키워드 없음"
 
     return result
 
 def break_long_words(text, max_len=50):
-    # 연속된 공백 없는 문자열을 강제로 줄바꿈
     return re.sub(r'(\S{' + str(max_len) + r',})', lambda m: '\n'.join([m.group(0)[i:i+max_len] for i in range(0, len(m.group(0)), max_len)]), text)
 
 def generate_pdf_report(company_name, analysis_result, file_path="report.pdf"):
@@ -89,6 +109,24 @@ def generate_pdf_report(company_name, analysis_result, file_path="report.pdf"):
     date_str = datetime.now().strftime("분석일: %Y년 %m월 %d일")
     pdf.cell(0, 10, date_str, ln=True, align='R')
     pdf.ln(5)
+
+    # ✅ 요약 및 키워드 먼저 출력
+    summary = analysis_result.get("__요약__")
+    keywords = analysis_result.get("__키워드__")
+
+    if summary:
+        pdf.set_font("NanumGothic", "B", 13)
+        pdf.cell(0, 10, "요약", ln=True)
+        pdf.set_font("NanumGothic", "", 11)
+        pdf.multi_cell(0, 8, summary)
+        pdf.ln(3)
+
+    if keywords:
+        pdf.set_font("NanumGothic", "B", 13)
+        pdf.cell(0, 10, "핵심 키워드", ln=True)
+        pdf.set_font("NanumGothic", "", 11)
+        pdf.multi_cell(0, 8, keywords)
+        pdf.ln(5)
 
     # ✅ 목차
     pdf.set_font("NanumGothic", "B", 12)

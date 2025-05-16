@@ -2,3 +2,5 @@
 .env
 gemini_test
 __pycache__
+*.pdf
+*.db
