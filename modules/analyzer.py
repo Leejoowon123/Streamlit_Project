@@ -8,8 +8,6 @@ from markdown2 import markdown
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-
-
 warnings.filterwarnings("ignore", message="cmap value too big/small")
 
 STAGES = [

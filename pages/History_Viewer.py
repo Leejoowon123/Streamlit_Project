@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from modules.db import get_grouped_results
+from modules.db import get_grouped_results, get_all_kpi_results
 import os
 
 st.set_page_config(page_title="📊 분석 이력", layout="wide")
@@ -30,3 +30,26 @@ if results:
                 st.warning("❌ PDF 파일을 찾을 수 없습니다.")
 else:
     st.info("⚠️ 저장된 분석 이력이 없습니다.")
+
+st.divider()
+
+st.title("🏁 KPI 분석 결과 이력")
+kpi_results = get_all_kpi_results()
+
+if kpi_results:
+    for r in kpi_results:
+        with st.expander(f"{r.timestamp.strftime('%Y-%m-%d %H:%M')} | {r.company}"):
+            st.markdown("✅ 이 분석은 KPI 자동 생성 결과입니다.")
+            if os.path.exists(r.pdf_path):
+                with open(r.pdf_path, "rb") as f:
+                    st.download_button(
+                        label="📥 KPI PDF 다운로드",
+                        data=f,
+                        file_name=os.path.basename(r.pdf_path),
+                        mime="application/pdf",
+                        key=f"kpi_{r.id}"
+                    )
+            else:
+                st.warning("❌ PDF 파일을 찾을 수 없습니다.")
+else:
+    st.info("⛔ 저장된 KPI 분석 이력이 없습니다.")

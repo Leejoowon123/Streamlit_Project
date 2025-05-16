@@ -6,7 +6,7 @@ def call_gemini(prompt: str) -> str:
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY")
 
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    url = os.getenv("GEMINI_URL")
     headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [{"parts": [{"text": prompt}]}]
