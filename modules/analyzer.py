@@ -57,9 +57,9 @@ def run_full_analysis(company_name, selected_stages):
         try:
             answer = call_gemini(prompt)
             if not answer.strip():
-                answer = f"⚠️ {display_name}에 대한 Gemini 응답이 비어 있습니다."
+                answer = f"{display_name}에 대한 Gemini 응답이 비어 있습니다."
         except Exception as e:
-            answer = f"❌ {display_name} 호출 중 오류 발생: {e}"
+            answer = f"{display_name} 호출 중 오류 발생: {e}"
 
         result[display_name] = answer
         
@@ -81,7 +81,7 @@ def run_full_analysis(company_name, selected_stages):
         result["__요약__"] = summary_text
         result["__키워드__"] = keywords
     except Exception as e:
-        result["__요약__"] = f"❌ 요약 실패: {e}"
+        result["__요약__"] = f"요약 실패: {e}"
         result["__키워드__"] = "키워드 없음"
 
     return result
@@ -94,21 +94,21 @@ def generate_pdf_report(company_name, analysis_result, file_path="report.pdf"):
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
 
-    # ✅ 폰트 등록
+    # 폰트 등록
     pdf.add_font("NanumGothic", "", os.path.join("fonts", "NanumGothic.ttf"), uni=True)
     pdf.add_font("NanumGothic", "B", os.path.join("fonts", "NanumGothicBold.ttf"), uni=True)
 
-    # ✅ 제목
+    # 제목
     pdf.set_font("NanumGothic", "B", 16)
     pdf.cell(0, 10, f"{company_name} 전략 분석 리포트", ln=True, align='C')
 
-    # ✅ 날짜
+    # 날짜
     pdf.set_font("NanumGothic", "", 11)
     date_str = datetime.now().strftime("분석일: %Y년 %m월 %d일")
     pdf.cell(0, 10, date_str, ln=True, align='R')
     pdf.ln(5)
 
-    # ✅ 요약 및 키워드 먼저 출력
+    # 요약 및 키워드 먼저 출력
     summary = analysis_result.get("__요약__")
     keywords = analysis_result.get("__키워드__")
 
@@ -126,7 +126,7 @@ def generate_pdf_report(company_name, analysis_result, file_path="report.pdf"):
         pdf.multi_cell(0, 8, keywords)
         pdf.ln(5)
 
-    # ✅ 목차
+    # 목차
     pdf.set_font("NanumGothic", "B", 12)
     pdf.cell(0, 10, "목차", ln=True)
     pdf.set_font("NanumGothic", "", 11)
@@ -134,7 +134,7 @@ def generate_pdf_report(company_name, analysis_result, file_path="report.pdf"):
         pdf.cell(0, 8, f"- {section}", ln=True)
     pdf.ln(10)
 
-    # ✅ 본문
+    # 본문
     for section, content in analysis_result.items():
         pdf.set_font("NanumGothic", "B", 12)
         pdf.multi_cell(0, 10, section)
@@ -144,6 +144,59 @@ def generate_pdf_report(company_name, analysis_result, file_path="report.pdf"):
         html = markdown(content)
         soup = BeautifulSoup(html, "html.parser")
 
+        pdf.set_font("NanumGothic", "", 11)
+
+        for element in soup.find_all(["p", "li"]):
+            try:
+                raw_text = element.get_text(strip=True)
+                safe_text = break_long_words(raw_text)
+                pdf.multi_cell(0, 8, safe_text)
+                pdf.ln(1)
+            except Exception as e:
+                pdf.set_text_color(255, 0, 0)
+                pdf.multi_cell(0, 8, f"[렌더링 실패: {e}]")
+                pdf.set_text_color(0, 0, 0)
+
+        pdf.ln(5)
+
+    pdf.output(file_path)
+    return file_path
+
+def generate_pdf_report_with_structured_kpi(company_name, analysis_result, file_path="report.pdf"):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+
+    # 폰트 등록
+    pdf.add_font("NanumGothic", "", os.path.join("fonts", "NanumGothic.ttf"), uni=True)
+    pdf.add_font("NanumGothic", "B", os.path.join("fonts", "NanumGothicBold.ttf"), uni=True)
+
+    # 제목
+    pdf.set_font("NanumGothic", "B", 16)
+    pdf.cell(0, 10, f"{company_name} 전략 KPI 분석 리포트", ln=True, align='C')
+
+    # 날짜
+    pdf.set_font("NanumGothic", "", 11)
+    date_str = datetime.now().strftime("분석일: %Y년 %m월 %d일")
+    pdf.cell(0, 10, date_str, ln=True, align='R')
+    pdf.ln(5)
+
+    # 목차
+    pdf.set_font("NanumGothic", "B", 12)
+    pdf.cell(0, 10, "목차", ln=True)
+    pdf.set_font("NanumGothic", "", 11)
+    for section in analysis_result:
+        pdf.cell(0, 8, f"- {section}", ln=True)
+    pdf.ln(10)
+
+    # 본문
+    for section, content in analysis_result.items():
+        pdf.set_font("NanumGothic", "B", 12)
+        pdf.multi_cell(0, 10, break_long_words(section))
+        pdf.ln(2)
+
+        html = markdown(str(content))
+        soup = BeautifulSoup(html, "html.parser")
         pdf.set_font("NanumGothic", "", 11)
 
         for element in soup.find_all(["p", "li"]):

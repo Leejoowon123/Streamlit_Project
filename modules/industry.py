@@ -23,9 +23,9 @@ def get_competitor_comparison_table(company_name):
         if "candidates" in result:
             return result["candidates"][0]["content"]["parts"][0]["text"]
         else:
-            st.error("❌ Gemini 응답 오류 발생 (산업 분석)")
-            print("📦 [Gemini 응답 - 산업 분석]", result)
-            return "⚠️ 산업 분석에 실패했습니다."
+            st.error("Gemini 응답 오류 발생 (산업 분석)")
+            print("[Gemini 응답 - 산업 분석]", result)
+            return "산업 분석에 실패했습니다."
     except Exception as e:
-        st.error("❌ 산업 분석 요청 중 오류 발생")
+        st.error("산업 분석 요청 중 오류 발생")
         return f"[산업 분석 실패: {company_name}]\n{str(e)}"

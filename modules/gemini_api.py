@@ -17,8 +17,8 @@ def call_gemini(prompt: str) -> str:
         data = response.json()
 
         if response.status_code != 200:
-            return f"❌ Gemini 오류: {data.get('error', {}).get('message', '알 수 없는 오류')}"
+            return f"Gemini 오류: {data.get('error', {}).get('message', '알 수 없는 오류')}"
 
         return data['candidates'][0]['content']['parts'][0]['text']
     except Exception as e:
-        return f"❌ 요청 실패: {str(e)}"
+        return f"요청 실패: {str(e)}"

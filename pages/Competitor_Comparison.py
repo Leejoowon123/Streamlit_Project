@@ -19,7 +19,7 @@ if st.button("경쟁사 비교 실행"):
         if match:
             markdown_table = match.group()
         else:
-            st.error("❌ 마크다운 표를 추출하지 못했습니다.")
+            st.error("마크다운 표를 추출하지 못했습니다.")
             st.text_area("🔍 원본 응답:", raw_text, height=300)
             st.stop()
 
@@ -31,5 +31,5 @@ if st.button("경쟁사 비교 실행"):
             st.markdown("### 📊 비교 표")
             st.dataframe(df)
         except Exception as e:
-            st.error(f"❌ 표 변환 실패: {e}")
-            st.text_area("🔍 추출된 표 텍스트:", markdown_table, height=300)
+            st.error(f"표 변환 실패: {e}")
+            st.text_area("추출된 표 텍스트:", markdown_table, height=300)

@@ -27,9 +27,9 @@ if results:
                         mime="application/pdf"
                     )
             else:
-                st.warning("❌ PDF 파일을 찾을 수 없습니다.")
+                st.warning("PDF 파일을 찾을 수 없습니다.")
 else:
-    st.info("⚠️ 저장된 분석 이력이 없습니다.")
+    st.info("저장된 분석 이력이 없습니다.")
 
 st.divider()
 
@@ -39,7 +39,7 @@ kpi_results = get_all_kpi_results()
 if kpi_results:
     for r in kpi_results:
         with st.expander(f"{r.timestamp.strftime('%Y-%m-%d %H:%M')} | {r.company}"):
-            st.markdown("✅ 이 분석은 KPI 자동 생성 결과입니다.")
+            st.markdown("이 분석은 KPI 자동 생성 결과입니다.")
             if os.path.exists(r.pdf_path):
                 with open(r.pdf_path, "rb") as f:
                     st.download_button(
@@ -50,6 +50,6 @@ if kpi_results:
                         key=f"kpi_{r.id}"
                     )
             else:
-                st.warning("❌ PDF 파일을 찾을 수 없습니다.")
+                st.warning("PDF 파일을 찾을 수 없습니다.")
 else:
-    st.info("⛔ 저장된 KPI 분석 이력이 없습니다.")
+    st.info("저장된 KPI 분석 이력이 없습니다.")

@@ -2,8 +2,6 @@ from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 import os
-from .history import get_saved_analysis_titles, get_analysis_by_index
-
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PDF_DIR = os.path.abspath(os.path.join(BASE_DIR, "../output"))
@@ -32,6 +30,7 @@ class KPIRecord(Base):
     company = Column(String)
     timestamp = Column(DateTime, default=datetime.now)
     pdf_path = Column(String)
+    kpi_text = Column(Text)
 
 Base.metadata.create_all(bind=engine)
 
@@ -91,25 +90,29 @@ def get_grouped_results():
     return grouped
 
 def get_analysis_by_company(company_name):
-    titles = get_saved_analysis_titles()
-
-    for index, title in enumerate(titles):
-        if title["회사명"] == company_name:
-            return get_analysis_by_index(index)
+    session = SessionLocal()
+    all_records = session.query(KPIRecord).order_by(KPIRecord.timestamp.desc()).all()
+    for record in all_records:
+        if record.company == company_name:
+            return {
+                "회사명": record.company,
+                "조회일": record.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                "PDF 경로": record.pdf_path,
+                "분석결과": record.kpi_text,
+            }
     return None
 
 # KPI 저장 함수
-def save_kpi_analysis_result(company_name, kpi_result, pdf_path):
+def save_kpi_analysis_result(company_name, kpi_text, pdf_path):
     session = SessionLocal()
     entry = KPIRecord(
         company=company_name,
-        pdf_path=pdf_path
+        pdf_path=pdf_path,
+        kpi_text=kpi_text
     )
     session.add(entry)
     session.commit()
     session.close()
-
-
 
 # KPI 결과 조회 함수
 def get_all_kpi_results():
