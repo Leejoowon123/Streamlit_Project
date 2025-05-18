@@ -24,7 +24,8 @@ if results:
                         label="📥 PDF 다운로드",
                         data=f,
                         file_name=file_name,
-                        mime="application/pdf"
+                        mime="application/pdf",
+                        key=f"analysis_{r['회사명']}_{r['조회일']}"
                     )
             else:
                 st.warning("PDF 파일을 찾을 수 없습니다.")
