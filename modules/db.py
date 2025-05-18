@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Date, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 import os
@@ -10,7 +10,8 @@ DB_PATH = os.path.join(PDF_DIR, "analysis_history.db")
 # SQLAlchemy 설정
 engine = create_engine(f'sqlite:///{DB_PATH}', echo=False)
 Base = declarative_base()
-SessionLocal = sessionmaker(bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session = SessionLocal()
 
 class AnalysisResult(Base):
     __tablename__ = "analysis_results"
@@ -31,6 +32,25 @@ class KPIRecord(Base):
     timestamp = Column(DateTime, default=datetime.now)
     pdf_path = Column(String)
     kpi_text = Column(Text)
+
+# ✅ 추가: KPI 기한 테이블
+class KPIDeadline(Base):
+    __tablename__ = "kpi_deadlines"
+    company = Column(String, primary_key=True)
+    kpi_name = Column(String, primary_key=True)
+    deadline = Column(Date)
+    target = Column(Float)
+    measure = Column(String) 
+
+# ✅ 추가: KPI 실적 추이 테이블
+class KPIDailyProgress(Base):
+    __tablename__ = "kpi_daily_progress"
+    id = Column(String, primary_key=True)
+    company = Column(String)
+    kpi_name = Column(String)
+    date = Column(Date)
+    target = Column(Float)
+    actual = Column(Float)
 
 Base.metadata.create_all(bind=engine)
 
