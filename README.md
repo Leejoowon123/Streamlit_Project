@@ -2,7 +2,24 @@
 
 ## 🔍 개요
 
-이 프로젝트는 사용자가 **기업명을 입력하고 전략 분석 항목을 선택**하면, Google Gemini API를 활용해 다음과 같은 전략 분석을 자동으로 수행하고 결과를 PDF로 저장 및 조회할 수 있는 **Streamlit 기반 웹 애플리케이션**입니다.
+이 프로젝트는 사용자가 **기업명을 입력하고 (향후 추가 예정)전략 분석 항목을 선택**하면, Google Gemini API를 활용해 다음과 같은 전략 분석을 자동으로 수행하고 결과를 PDF로 저장 및 조회할 수 있는 **Streamlit 기반 웹 애플리케이션**입니다. 여러 전략 분석, KPI 생성 및 대시보드 관리, 이전 이력 조회 기능이 있습니다.
+
+## 🚀 실행 결과 화면
+1. **main.py 결과 화면(전략 분석)**
+
+![alt text](./images/main.png)
+
+2. **KPI_Analysis.py 결과 화면(KPI 분석)**
+
+![alt text](./images/KPI_Analysis.png)
+
+3. **KPI_Result_Viewer.py 결과 화면(KPI 대시보드)**
+
+![alt text](./images/KPI_Result_Viewer.png)
+
+4. **History_Viewer.py 결과 화면(조회 이력 관리)**
+
+![alt text](./images/History_Viewer.png)
 
 ## 🚀 실행 방법
 1. 가상환경 설치
@@ -39,7 +56,6 @@ streamlit run main.py
    - 요약 및 키워드 자동 생성 포함
 4. 🗃️ **SQLite 기반 분석 이력 저장 및 조회**
    - 조회일, 기업명, 분석 항목, 요약, 키워드, PDF 다운로드 제공
-5. 🧭 **사이드바에 요약/키워드 포함 이력 탐색 기능**
 
 ---
 
@@ -47,13 +63,17 @@ streamlit run main.py
 
 - main.py: 메인 실행 파일
 - modules/ : 기능 로직
-    + analyzer.py: 분석 로직
-    + db.py: SQLAlchemy 기반 DB 저장/조회 모듈
-    + gemini_api.py: gemini 연결
-    + history.py: 이력 저장
-    + prompts_loader.py: 프롬프트 로더
+   + analyzer.py: 분석 로직
+   + db.py: SQLAlchemy 기반 DB 저장/조회 모듈
+   + gemini_api.py: gemini 연결
+   + history.py: 이력 저장
+   + prompts_loader.py: 프롬프트 로더
+   + kpi_dashboard.py: KPI_Result_Viewer 화면 로적
+   + kpi_generator.py: KPI_Analysis 화면 로직
 - pages/
-    + History_Viewer.py: SQLAlchemy 연결하여 조회 기능
+   + History_Viewer.py: SQLAlchemy 연결하여 조회 기능
+   + KPI_Analysis.py: KPI 분석 화면
+   + KPI_Result_Viewer.py: KPI 대시보드 결과 화면
 - prompts/ : 프롬프트 템플릿
 
 ## 📌 사용 기술

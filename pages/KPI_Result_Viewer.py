@@ -20,8 +20,8 @@ selected_record = next((item for item in kpi_history if item.company == selected
 if selected_record:
     st.title(f"{selected_company} KPI")
     st.caption(f"분석일: {selected_record.timestamp}")
-
     kpi_items = parse_kpi_text_to_dict(selected_record.kpi_text)
+
     if not kpi_items:
         st.warning("KPI 파싱 실패. 포맷을 확인하세요.")
         st.code(selected_record.kpi_text)

@@ -11,18 +11,16 @@ def get_kpi_records():
     return records
 
 def parse_kpi_text_to_dict(kpi_text):
-    raw_kpis = re.findall(
-        r"\*\*\d+\.\s*(.*?)\*\*\n+.*?-\s+\*\*설명:\*\*\s*(.*?)\n\s+-\s+\*\*측정 기준:\*\*\s*(.*?)\n\s+-\s+\*\*기대 효과:\*\*\s*(.*?)(?=\n\s*\*\*|$)",
-        kpi_text,
-        flags=re.DOTALL
-    )
+    pattern = r"\d+\.\s+\*\*(.*?)\*\*\s*-\s+\*\*설명:\*\*\s*(.*?)\s*-\s+\*\*측정 기준:\*\*\s*(.*?)\s*-\s+\*\*기대 효과:\*\*\s*(.*?)(?=\n\d+\.|\Z)"
+    matches = re.findall(pattern, kpi_text, flags=re.DOTALL)
 
     kpi_list = []
-    for title, description, measure, impact in raw_kpis:
+    for title, description, measure, impact in matches:
         kpi_list.append({
             "KPI 명": title.strip(),
             "설명": description.strip(),
             "측정 기준": measure.strip(),
             "기대 효과": impact.strip()
         })
+
     return kpi_list
