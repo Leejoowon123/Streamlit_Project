@@ -33,7 +33,7 @@ class KPIRecord(Base):
     pdf_path = Column(String)
     kpi_text = Column(Text)
 
-# ✅ 추가: KPI 기한 테이블
+# ✅ KPI 기한 테이블
 class KPIDeadline(Base):
     __tablename__ = "kpi_deadlines"
     company = Column(String, primary_key=True)
@@ -42,7 +42,7 @@ class KPIDeadline(Base):
     target = Column(Float)
     measure = Column(String) 
 
-# ✅ 추가: KPI 실적 추이 테이블
+# ✅ KPI 실적 추이 테이블
 class KPIDailyProgress(Base):
     __tablename__ = "kpi_daily_progress"
     id = Column(String, primary_key=True)
