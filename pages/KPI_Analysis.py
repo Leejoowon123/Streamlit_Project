@@ -45,7 +45,6 @@ if (
             mime="application/pdf",
         )
     st.success("KPI 분석 완료!")
-    kpi_text = st.session_state["kpi_text"] 
-    st.markdown(f"{kpi_text}")
+    st.markdown(f"{st.session_state["kpi_text"]}")
 else:
     st.info("👆 회사명을 입력하고 KPI 생성 버튼을 눌러주세요.")

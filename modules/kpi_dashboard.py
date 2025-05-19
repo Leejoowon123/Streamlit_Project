@@ -3,6 +3,7 @@ import os
 import re
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from modules.db import KPIRecord, SessionLocal
+from modules.db import session
 
 def get_kpi_records():
     db = SessionLocal()
