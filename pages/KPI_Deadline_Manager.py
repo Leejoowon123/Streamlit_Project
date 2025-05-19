@@ -1,7 +1,7 @@
 import streamlit as st
 from modules.kpi_dashboard import get_kpi_records, parse_kpi_text_to_dict
 from modules.db import KPIDeadline, session, init_db
-from datetime import date
+import datetime
 import uuid
 
 init_db()
@@ -17,13 +17,23 @@ if selected_company:
     parsed_kpis = parse_kpi_text_to_dict(record.kpi_text)
 
     for idx, kpi in enumerate(parsed_kpis):
+        existing = session.query(KPIDeadline).filter_by(company=selected_company, kpi_name=kpi['KPI 명']).first()
+
+        if existing:
+            measure_default = existing.measure
+            target_default = existing.target
+            deadline_default = existing.deadline
+        else:
+            measure_default = ""
+            target_default = 0.0
+            deadline_default = datetime.date.today()
+
         st.markdown(f"### {idx+1}. {kpi['KPI 명']}")
-        measure = st.text_area("📏 측정 기준", key=f"measure_{idx}")
-        target = st.number_input("🎯 목표값", min_value=0.0, key=f"target_{idx}")
-        deadline = st.date_input("📅 달성 기한", min_value=date.today(), key=f"deadline_{idx}")
+        measure = st.text_area("📏 측정 기준", value=measure_default, key=f"measure_{idx}")
+        target = st.number_input("🎯 목표값", value=target_default, key=f"target_{idx}")
+        deadline = st.date_input("📅 달성 기한", value=deadline_default, key=f"deadline_{idx}")
 
         if st.button(f"💾 저장 - {kpi['KPI 명']}", key=f"save_{idx}"):
-            existing = session.query(KPIDeadline).filter_by(company=selected_company, kpi_name=kpi['KPI 명']).first()
             if existing:
                 existing.deadline = deadline
                 existing.target = target
